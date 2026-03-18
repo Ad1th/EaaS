@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -50,13 +52,48 @@ func main() {
 }
 
 func runLoop(message string) {
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		if strings.TrimSpace(scanner.Text()) == "eaas exit" {
+	interactive := isTerminal(os.Stdin) && isTerminal(os.Stdout)
+	reader := bufio.NewReader(os.Stdin)
+
+	for {
+		if interactive {
+			fmt.Print(prompt())
+		}
+
+		line, err := reader.ReadString('\n')
+		if err == io.EOF {
 			return
 		}
-		if message != "" {
+		if err != nil {
+			return
+		}
+
+		cmd := strings.TrimSpace(line)
+		if cmd == "eaas exit" {
+			return
+		}
+		if cmd != "" && message != "" {
 			fmt.Println(message)
 		}
 	}
+}
+
+func isTerminal(f *os.File) bool {
+	info, err := f.Stat()
+	if err != nil {
+		return false
+	}
+	return (info.Mode() & os.ModeCharDevice) != 0
+}
+
+func prompt() string {
+	wd, err := os.Getwd()
+	if err != nil {
+		return "% "
+	}
+	name := filepath.Base(wd)
+	if name == "" || name == "." || name == string(filepath.Separator) {
+		return "% "
+	}
+	return name + " % "
 }

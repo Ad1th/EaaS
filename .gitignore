@@ -1,0 +1,15 @@
+# Binaries
+eaas
+EaaS
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries and coverage
+*.test
+*.out
+coverage.out
+
+# macOS
+.DS_Store
