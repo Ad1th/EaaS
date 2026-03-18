@@ -1,7 +1,7 @@
 class Eaas < Formula
   desc "Eventually As A Service"
   homepage "https://github.com/Ad1th/EaaS"
-  url "https://github.com/Ad1th/EaaS.git", branch: "main"
+  url "https://github.com/Ad1th/EaaS.git", branch: "master"
   version "0.1.0"
 
   depends_on "go" => :build
