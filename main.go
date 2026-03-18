@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -28,19 +30,33 @@ func main() {
 	}
 
 	if silent {
+		runLoop("")
 		return
 	}
 
+	message := "Eventually."
 	switch {
 	case dry:
-		fmt.Println("Noted.")
+		message = "Noted."
 	case corporate:
-		fmt.Println("On the roadmap.")
+		message = "On the roadmap."
 	case reassure:
-		fmt.Println("This can wait.")
+		message = "This can wait."
 	case optimistic:
-		fmt.Println("It will happen.")
-	default:
-		fmt.Println("Eventually.")
+		message = "It will happen."
+	}
+
+	runLoop(message)
+}
+
+func runLoop(message string) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		if strings.TrimSpace(scanner.Text()) == "eaas exit" {
+			return
+		}
+		if message != "" {
+			fmt.Println(message)
+		}
 	}
 }
